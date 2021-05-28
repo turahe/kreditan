@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Turahe\Master\Contracts\Sortable;
+use Turahe\Master\Traits\SortableTrait;
 
 /**
  * App\Models\Tag
@@ -27,7 +29,8 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|Tag whereUpdatedAt($value)
  * @mixin \Eloquent
  */
-class Tag extends Model
+class Tag extends Model implements Sortable
 {
     use HasFactory;
+    use SortableTrait;
 }

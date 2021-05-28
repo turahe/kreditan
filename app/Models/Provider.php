@@ -34,4 +34,6 @@ use Illuminate\Database\Eloquent\Model;
 class Provider extends Model
 {
     use HasFactory;
+
+    protected $table = 'tm_providers';
 }

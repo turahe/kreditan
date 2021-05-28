@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
 
 /**
  * App\Models\Vendor
@@ -41,7 +43,8 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|Vendor whereUserId($value)
  * @mixin \Eloquent
  */
-class Vendor extends Model
+class Vendor extends Model implements HasMedia
 {
     use HasFactory;
+    use InteractsWithMedia;
 }

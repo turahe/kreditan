@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -25,7 +26,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Post[] $posts
  * @property-read int|null $posts_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Products[] $products
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Product[] $products
  * @property-read int|null $products_count
  * @method static \Illuminate\Database\Eloquent\Builder|Category newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Category newQuery()
@@ -50,15 +51,89 @@ class Category extends Model
 {
     use HasFactory;
 
-    public function posts(): HasMany
+    /**
+     * @var string[]
+     */
+    protected $fillable = [
+        'parent_id',
+        'title',
+        'description',
+        'layout',
+        'type',
+    ];
+
+    /**
+     * @return string
+     */
+    public function getLftName()
     {
-        return $this->hasMany(Post::class, 'category_id');
+        return 'record_left';
     }
 
+    /**
+     * @return string
+     */
+    public function getRgtName()
+    {
+        return 'record_right';
+    }
+
+    /**
+     * @return string
+     */
+    public function getParentIdName()
+    {
+        return 'parent_id';
+    }
+
+    /**
+     * Get cover image url.
+     *
+     * @return string
+     */
+    public function getCoverAttribute(): string
+    {
+        if ($this->hasMedia('image') && $this->relationLoaded('media') && config('filesystems.default') !== 'public') {
+            return $this->getFirstTemporaryUrl(Carbon::now()->addHour(), 'image', 'sm');
+        }
+
+        if ($this->getFirstMediaUrl('image', 'sm')) {
+            return $this->getFirstMediaUrl('image', 'sm');
+        }
+
+        return \Storage::url('images/not-found.jpg');
+    }
+
+    /**
+     * get Url.
+     *
+     * @return string
+     */
+    public function getUrlAttribute(): string
+    {
+        return route('category.detail', $this->slug);
+    }
+
+    /**
+     * one to many polymorphic relation category model and other models.
+     *
+     * @return HasMany
+     */
     public function products(): HasMany
     {
-        return $this->hasMany(Products::class, 'category_id');
+        return $this->hasMany(Product::class, 'category_id', 'id')
+            ->latest('published_at');
+    }
 
+    /**
+     * one to many relationship category model and other models.
+     *
+     * @return HasMany
+     */
+    public function posts(): HasMany
+    {
+        return $this->hasMany(Post::class, 'category_id', 'id')
+            ->latest('published_at');
     }
 
 }

@@ -52,8 +52,8 @@ $ct-series-colors: (
 			stroke: $series-color;
 		}
 
-		.ct-area, 
-		.ct-slice-donut-solid, 
+		.ct-area,
+		.ct-slice-donut-solid,
 		.ct-slice-pie,
 		.ct-bar {
 			fill: $series-color;
@@ -80,13 +80,13 @@ $ct-series-colors: (
 }
 
 
-/* Top Products Chart */
+/* Top Product Chart */
 .ct-label {
     @extend .font-14;
 	color: $font-color;
 }
 .ct-legend {
-	position: relative;	
+	position: relative;
 	z-index: 5;
 	text-align: right;
 	padding: 0;
@@ -130,7 +130,7 @@ $ct-series-colors: (
 		$i: $i + 1;
 	}
 }
-/* End Top Products Chart */
+/* End Top Product Chart */
 
 
 

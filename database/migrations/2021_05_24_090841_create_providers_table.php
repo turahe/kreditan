@@ -13,7 +13,7 @@ class CreateProvidersTable extends Migration
      */
     public function up()
     {
-        Schema::create('providers', function (Blueprint $table) {
+        Schema::create('tm_providers', function (Blueprint $table) {
             $table->id();
             $table->string('name');
             $table->enum('service', ['SHIPPING CHARGES','SMS GATEWAY','ONLINE PAYMENT','MAILER','CDN','STORAGE','REGISTRAR','ATM NETWORK','PPOB','CLOUD','DNS','WEBSOCKET','VIDEO HOSTING','TELCO']);
@@ -32,6 +32,6 @@ class CreateProvidersTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('providers');
+        Schema::dropIfExists('tm_providers');
     }
 }
