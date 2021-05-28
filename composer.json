@@ -14,9 +14,7 @@
         "spatie/laravel-medialibrary": "^9.6",
         "turahe/laravel-installer": "dev-master",
         "turahe/laravel-likeable": "dev-master",
-        "turahe/master-data": "dev-master",
-      "ext-http": "*",
-        "ext-json": "*"
+        "turahe/master-data": "dev-master"
     },
     "require-dev": {
         "barryvdh/laravel-debugbar": "^3.4",
