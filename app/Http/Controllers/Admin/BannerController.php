@@ -9,12 +9,23 @@ use App\Models\Post as Banner;
 class BannerController extends Controller
 {
     /**
+     * @var array|string[]
+     */
+    protected $fields = [
+        'title' => '',
+        'subtitle' => '',
+        'description' => '',
+        'content' => '',
+    ];
+    /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View|\Illuminate\Http\Response
      */
     public function index()
     {
+        $banners = Banner::all();
+        return view('admin.banners.index', compact('banners'));
 
     }
 
@@ -25,18 +36,24 @@ class BannerController extends Controller
      */
     public function create()
     {
-        return view('admin.banners.create');
+        $data = [];
+        foreach ($this->fields as $field => $default) {
+            $data[$field] = old($field, $default);
+        }
+        return view('admin.banners.create', $data);
     }
 
     /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function store(Request $request)
     {
         Banner::create($request->input());
+
+        return redirect()->back();
 
     }
 
@@ -44,11 +61,12 @@ class BannerController extends Controller
      * Display the specified resource.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View|\Illuminate\Http\Response
      */
     public function show($id)
     {
-        //
+        $banner = Banner::findOrFail($id);
+        return view('admin.banners.show', compact('banner'));
     }
 
     /**
@@ -59,7 +77,13 @@ class BannerController extends Controller
      */
     public function edit($id)
     {
-        return view('admin.banners.edit');
+        $banner = Banner::findOrFail($id);
+        $data = ['banner' => $banner];
+
+        foreach (array_keys($this->fields) as $field) {
+            $data[$field] = old($field, $banner->$field);
+        }
+        return view('admin.banners.edit', $data);
     }
 
     /**
@@ -67,21 +91,26 @@ class BannerController extends Controller
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function update(Request $request, $id)
     {
-        //
+        $banner = Banner::findOrFail($id);
+        $banner->update($request->input());
+        return redirect()->back();
     }
 
     /**
      * Remove the specified resource from storage.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function destroy($id)
     {
-        //
+        $banner = Banner::findOrFail($id);
+        $banner->delete();
+        return redirect()->route('banners.index')
+            ->with('success', 'Banner Was delete');
     }
 }

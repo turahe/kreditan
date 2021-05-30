@@ -8,6 +8,12 @@ use App\Models\Post as Blog;
 
 class BlogController extends Controller
 {
+    protected $fields = [
+        'title' => '',
+        'subtitle' => '',
+        'description' => '',
+        'content' => '',
+    ];
     /**
      * Display a listing of the resource.
      *
@@ -23,33 +29,39 @@ class BlogController extends Controller
     /**
      * Show the form for creating a new resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View|\Illuminate\Http\Response
      */
     public function create()
     {
-        return view('admin.blogs.create');
+        $data = [];
+        foreach ($this->fields as $field => $default) {
+            $data[$field] = old($field, $default);
+        }
+        return view('admin.blogs.create', $data);
     }
 
     /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function store(Request $request)
     {
-        //
+        Blog::create($request->input());
+        return redirect()->back();
     }
 
     /**
      * Display the specified resource.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View|\Illuminate\Http\Response
      */
     public function show($id)
     {
-        //
+        $blog = Blog::findOrFail($id);
+        return view('admin.blogs.show', compact('blog'));
     }
 
     /**
@@ -61,7 +73,12 @@ class BlogController extends Controller
     public function edit($id)
     {
         $blog = Blog::findOrFail($id);
-        return view('admin.blogs.edit', compact('blog'));
+        $data = ['blog' => $blog];
+
+        foreach (array_keys($this->fields) as $field) {
+            $data[$field] = old($field, $blog->$field);
+        }
+        return view('admin.blogs.edit', $data);
     }
 
     /**
@@ -69,21 +86,26 @@ class BlogController extends Controller
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function update(Request $request, $id)
     {
-        //
+        $blog = Blog::findOrFail($id);
+        $blog->update($request->input());
+        return redirect()->back();
     }
 
     /**
      * Remove the specified resource from storage.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function destroy($id)
     {
-        //
+        $blog = Blog::findOrFail($id);
+        $blog->delete();
+        return redirect()->route('blogs.index')
+            ->with('success', 'Banner Was delete');
     }
 }

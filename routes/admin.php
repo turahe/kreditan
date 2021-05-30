@@ -14,3 +14,25 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', 'DashboardController@index');
+
+Route::group(['prefix' => 'posts'], function () {
+    Route::resource('blogs', 'BlogController');
+    Route::resource('Categories', 'CategoryController');
+    Route::resource('pages', 'PageController');
+    Route::resource('banners', 'BannerController');
+});
+
+Route::group(['prefix' => 'products'], function () {
+    Route::resource('items', 'ProductController');
+    Route::resource('categories', 'CategoryController');
+});
+
+Route::group(['prefix' => 'companies'], function () {
+    Route::resource('merchants', 'MerchantController');
+    Route::resource('creditors', 'CreditorController');
+});
+
+Route::group(['prefix' => 'transactions'], function () {
+    Route::resource('interest', 'InterestController');
+    Route::resource('/', 'TransactionController');
+});
